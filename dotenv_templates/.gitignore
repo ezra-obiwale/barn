@@ -1,0 +1,4 @@
+*
+!.gitignore
+!centos7-test.blog.j2
+!ubuntu-test.blog.j2

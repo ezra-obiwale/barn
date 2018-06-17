@@ -2,14 +2,14 @@ server {
     listen       80;
     server_name  {{ item.value.servernames | join(" ") }};
 
-    root   /var/www/{{ item.key }}/public;
-    index index.php index.html;
+    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path | default("public") }};
+    index index.{{ item.value.project_type | default('php') }};
 
     access_log  /var/log/nginx/{{ item.key }}-access.log;
     error_log  /var/log/nginx/{{ item.key }}-error.log error;
 
     location / {
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.{{ item.value.project_type | default('php') }}?$args;
 #        autoindex on;
     }
 

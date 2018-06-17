@@ -1,25 +1,28 @@
 server {
-    root /var/www/{{ item.key }}/public;
-    index index.php;
+    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path | default("public") }};
+    index index.{{ item.value.project_type | default('php') }};
 
     server_name {{ item.value.servernames | join(" ") }};
 
     location / {
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.{{ item.value.project_type | default('php') }}?$args;
+#        autoindex on;
     }
 
+    {% if item.value.project_type != 'html' %}
     # pass the PHP scripts to FastCGI server
     #
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass unix:/run/php/php7.2-fpm.sock;
     }
+    {% endif %}
     underscores_in_headers on;
 
     listen [::]:443 ssl;
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/api.schoolcredit.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.schoolcredit.net/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ item.value.servernames[0] }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.value.servernames[0] }}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -27,7 +30,7 @@ server {
 }
 server {
     {% for servername in item.value.servernames %}
-    if ($host = api.schoolcredit.net) {
+    if ($host = servername) {
         return 301 https://$host$request_uri;
     }
     {% endfor %}
