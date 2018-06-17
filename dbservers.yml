@@ -1,8 +1,8 @@
-# file: mysqlservers.yml
-- hosts: mysqlservers
+# file: dbservers.yml
+- hosts: dbservers
   become: true
   become_user: root
   roles:
     - common
-    - mysqltier
+    - dbtier
     - custom

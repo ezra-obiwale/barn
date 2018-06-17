@@ -20,5 +20,5 @@
 
 - name: Make sure SELinux managements tools are installed
   tags: selinux
-  yum: name=policycoreutils-python state=installed
+  yum: name=policycoreutils-python state=present
   

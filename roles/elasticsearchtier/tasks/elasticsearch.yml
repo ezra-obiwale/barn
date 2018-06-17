@@ -1,12 +1,12 @@
 # file: roles/elasticsearchtier/tasks/elasticsearch.yml
 - name: Install elasticsearch
   tags: elasticsearch
-  yum: name=elasticsearch state=installed enablerepo=elasticsearch
+  yum: name=elasticsearch state=present enablerepo=elasticsearch
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install elasticsearch
   tags: elasticsearch
-  apt: name=elasticsearch update_cache=yes state=installed
+  apt: name=elasticsearch update_cache=yes state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Make sure elasticsearch is running and is started on boot

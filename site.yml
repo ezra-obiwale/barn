@@ -1,5 +1,5 @@
 # file: site.yml
-- include: webservers.yml
-- include: mysqlservers.yml
-- include: queueservers.yml
-- include: elasticsearchservers.yml
+- import_playbook: webservers.yml
+- import_playbook: dbservers.yml
+- import_playbook: queueservers.yml
+- import_playbook: elasticsearchservers.yml

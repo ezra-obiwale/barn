@@ -3,11 +3,11 @@
   yum: name=yum state=latest
 
 - name: Install deltarpm
-  yum: name=deltarpm state=installed
+  yum: name=deltarpm state=present
 
 - name: Install yum-cron
   tags: yum-cron
-  yum: name=yum-cron state=installed
+  yum: name=yum-cron state=present
 
 - name: Make sure yum-cron is running and started on boot
   tags: yum-cron

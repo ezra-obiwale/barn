@@ -1,5 +1,5 @@
 # file: roles/webtier/tasks/dotenv.yml
-- name: Check if .env template exists
+- name: Check if dotenv template exists
   tags: dotenv
   local_action: stat path=dotenv_templates/{{ inventory_hostname }}.{{ item.key }}.j2
   vars:
@@ -7,8 +7,8 @@
   with_dict: "{{ virtualhosts }}"
   register: dotenv_file
 
-- name: Create node spesific .env file  
+- name: Create project specific dotenv file  
   tags: dotenv
-  template: src={{ item.stat.path }} dest=/var/www/{{ item.item.key }}/.env
+  template: src={{ item.stat.path }} dest=/var/www/{{ item.item.key }}/{{ item.item.value.dotenv_file | default(".env") }}
   with_items: "{{ dotenv_file.results }}"  
   when: item.stat.exists == True

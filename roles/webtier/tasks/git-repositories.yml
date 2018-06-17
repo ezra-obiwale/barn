@@ -1,0 +1,18 @@
+# file: roles/webtier/tasks/git-repositories.yml
+- name: Add repository users to group www-data
+  tags: nginx
+  shell: usermod -aG www-data {{ item.value.repository.user | default(root) }}
+  with_dict: "{{ virtualhosts }}"
+
+- name: Clone repositories
+  tags: git-repositories
+  git:
+    repo: "{{ item.value.repository.url }}"
+    version: "{{ item.value.repository.branch | default(master) }}"
+    dest: "/var/www/{{ item.key }}"
+    accept_hostkey: yes
+    force: yes
+  with_dict: "{{ virtualhosts }}"
+  become_user: "{{ item.value.repository.user | default(root) }}"
+  notify:
+    - Restart nginx

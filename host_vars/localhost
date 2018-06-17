@@ -12,11 +12,15 @@ virtualhosts:
     servernames:
     - blog.development
     - someother.development
+    project_type: php
+    dotenv_file: .env
     run_queue_worker: true
     has_scheduled_jobs: true
   someothersite:
     servernames:
     - someothersite.development
+    project_type: html
+    dotenv_file: env.js
     
 # MySQL root password
 mysql_root_password: somesecret

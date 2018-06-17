@@ -1,10 +1,10 @@
 # file: roles/common/tasks/ntp.yml
 - name: Install ntp
-  yum: name=ntp state=installed
+  yum: name=ntp state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install ntp
-  apt: name=ntp state=installed
+  apt: name=ntp state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Make sure ntpd is running

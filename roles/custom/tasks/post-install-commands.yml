@@ -1,0 +1,4 @@
+# file: roles/custom/tasks/post-install-commands.yml
+- name: Run post install commands
+  shell: "{{ item }}"
+  with_dict: "{{ virtualhosts }}"

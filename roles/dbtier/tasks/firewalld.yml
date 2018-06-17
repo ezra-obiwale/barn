@@ -1,6 +1,6 @@
 # file: roles/db/tasks/firewalld.yml
 - name: Install firewalld
-  yum: name=firewalld state=installed
+  yum: name=firewalld state=present
 
 - name: Make sure firewalld is running
   service: name=firewalld state=started

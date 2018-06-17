@@ -1,4 +1,4 @@
 # file: roles/queuetier/tasks/main.yml
-- include: beanstalk.yml
-- include: redis.yml
-- include: supervisor.yml
+- include_tasks: beanstalk.yml
+- include_tasks: redis.yml
+- include_tasks: supervisor.yml

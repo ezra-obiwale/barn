@@ -1,0 +1,18 @@
+# file: roles/webtier/tasks/nginx.yml
+- name: Check if apache2 is installed
+  tags: nginx
+  stat:
+    path: /usr/sbin/apache2
+  register: apache2_binary
+
+- name: Stop apache2
+  tags: nginx
+  when: apache2_binary.stat.exists == true
+  service: name=apache2 state=stopped enabled=no
+
+- name: Make sure nginx virtual hosts are configured
+  tags: nginx
+  template: src=nginx-ssl-virtualhost.conf.j2 dest=/etc/nginx/conf.d/{{ item.key }}.conf
+  with_dict: "{{ virtualhosts }}"
+  notify:
+    - Restart nginx

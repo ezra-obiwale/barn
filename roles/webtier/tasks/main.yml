@@ -1,18 +1,22 @@
 # file: roles/webtier/tasks/main.yml
-- include: remi.yml
+- include_tasks: javascript.yml
+- include_tasks: remi.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
-- include: ondrej.yml
+- include_tasks: ondrej.yml
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'  
-- include: php.yml
-- include: php-fpm.yml
-- include: composer.yml
-- include: nginx.yml
-- include: dotenv.yml
-- include: cron.yml
-- include: letsencrypt.yml
+- include_tasks: php.yml
+- include_tasks: php-fpm.yml
+- include_tasks: composer.yml
+- include_tasks: git-repositories.yml
+- include_tasks: nginx.yml
+- include_tasks: dotenv.yml
+- include_tasks: cron.yml
+- include_tasks: letsencrypt.yml
   when: enable_ssl|default(false)|bool == true
-- include: firewalld.yml
-- include: redis.yml
-- include: selinux.yml
+- include_tasks: nginx-ssl.yml
+  when: enable_ssl|default(false)|bool == true
+- include_tasks: firewalld.yml
+- include_tasks: redis.yml
+- include_tasks: selinux.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 

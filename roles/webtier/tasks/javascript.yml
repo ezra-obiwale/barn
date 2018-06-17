@@ -1,0 +1,44 @@
+# file: roles/common/tasks/javascript.yml
+- name: Check nodejs is installed
+  tags: javascript-nodejs
+  shell: dpkg-query -W 'nodejs'
+  ignore_errors: True
+  register: nodejs_is_installed
+
+- name: Download and Run 8.x Setup File
+  tags: javascript-nodejs
+  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  when: nodejs_is_installed == false
+  
+- name: Install nodejs
+  tags: javascript-nodejs
+  apt: name=nodejs state=present
+  when: nodejs_is_installed == false
+
+- name: Check yarn is installed
+  tags: javascript-yarn
+  shell: dpkg-query -W 'yarn'
+  ignore_errors: True
+  register: yarn_is_installed
+
+- name: Download and Add key
+  tags: javascript-yarn
+  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  when: yarn_is_installed == false
+  
+- name: Install yarn
+  tags: javascript-yarn
+  shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  when: yarn_is_installed == false
+
+- name: Upgrade all packages
+  apt: update_cache=yes
+  when: 
+    - yarn_is_installed == false
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Install yarn
+  tags: javascript-yarn
+  apt: name=yarn state=present
+  when: yarn_is_installed == false
+  

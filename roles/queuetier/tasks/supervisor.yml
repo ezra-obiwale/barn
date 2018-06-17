@@ -1,12 +1,12 @@
 # file: roles/beanstalktier/tasks/supervisor.yml
 - name: Install supervisor
   tags: supervisor
-  yum: name=supervisor state=installed
+  yum: name=supervisor state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install supervisor
   tags: supervisor
-  apt: name=supervisor state=installed
+  apt: name=supervisor state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Make sure supervisor is running and started on boot

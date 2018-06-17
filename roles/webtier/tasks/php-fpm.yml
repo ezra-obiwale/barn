@@ -1,12 +1,12 @@
 # file: roles/webtier/tasks/php-fpm.yml
 - name: Install php-fpm
   tags: php-fpm
-  yum: name=php-fpm state=installed
+  yum: name=php-fpm state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install php-fpm
   tags: php-fpm
-  apt: name=php7.2-fpm state=installed
+  apt: name=php7.2-fpm state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Make sure php-fpm is running

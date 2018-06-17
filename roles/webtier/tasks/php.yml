@@ -1,6 +1,6 @@
 # file: roles/webtier/tasks/php.yml
 - name: Install PHP and extensions
-  yum: name={{ item }} state=installed enablerepo=epel,remi,remi-php72
+  yum: name={{ item }} state=present enablerepo=epel,remi,remi-php72
   tags: php
   with_items:
     - php
@@ -15,7 +15,7 @@
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install PHP and extensions
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes
   tags: php
   with_items:
     - php7.2
@@ -29,7 +29,7 @@
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Install extra PHP packages
-  yum: name={{ item }} state=installed enablerepo=epel,remi,remi-php72
+  yum: name={{ item }} state=present enablerepo=epel,remi,remi-php72
   tags: php-extra
   with_items: "{{ php_extra_packages }}"
   when: php_extra_packages is defined and (ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat')
@@ -37,7 +37,7 @@
     - Restart php-fpm
 
 - name: Install extra PHP packages
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes
   tags: php-extra
   with_items: "{{ php_extra_packages }}"
   when: php_extra_packages is defined and (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian')

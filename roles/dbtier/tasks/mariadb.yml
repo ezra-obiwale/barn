@@ -1,0 +1,67 @@
+# file: roles/dbtier/tasks/mariadb.yml
+# - name: Install package for MariaDB community edition repository
+#   tags: mariadb
+#   yum:
+#     name: "http://repo.mariadb.com/mariadb-community-release-el{{ ansible_distribution_major_version }}-5.noarch.rpm"
+#     state: present
+#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+# - name: Install MariaDB
+#   tags: mariadb
+#   yum: name=mariadb-server state=present
+#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Install MariaDB
+  tags: mariadb
+  apt: name=mariadb-server state=present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+# - name: Make sure MariaDB is running and started on boot
+#   tags: mariadb
+#   service: name=mysqld state=started enabled=yes
+#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Make sure MariaDB is running and started on boot
+  tags: mariadb
+  service: name=mysql state=started enabled=yes
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Install MySQL-python
+  tags: mariadb
+  yum: name=MySQL-python state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Install MySQL-python
+  tags: mariadb
+  apt: name=python3-mysqldb state=present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Copy .my.cnf file with root password credentials
+  tags: mariadb
+  template: src=my-credentials.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+
+- name: Update mariadb root password for all root accounts
+  tags: mariadb
+  mysql_user: check_implicit_admin=yes name=root host=localhost password={{ mysql_root_password }}
+
+- name: Create MariaDB databases
+  tags: mariadb
+  mysql_db: name={{ item.key }} state=present
+  with_dict: "{{ mysql_databases }}"
+
+- name: Create application database user
+  tags: mariadb
+  mysql_user: name={{ item.value.mysql_user }} host=localhost password={{ item.value.mysql_password }} priv={{ item.key }}.*:ALL
+  with_dict: "{{ mysql_databases }}"
+
+- name: Delete anonymous MariaDB server user for {{ ansible_hostname }}
+  tags: mariadb
+  action: mysql_user user="" host="{{ ansible_hostname }}" state="absent"
+ 
+- name: Delete anonymous MariaDB server user for localhost
+  tags: mariadb
+  action: mysql_user user="" state="absent"
+ 
+- name: Remove the MariaDB test database
+  tags: mariadb
+  action: mysql_db db=test state=absent

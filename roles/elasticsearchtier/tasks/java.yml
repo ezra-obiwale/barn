@@ -1,7 +1,7 @@
 # file: roles/elasticsearchtier/tasks/java.yml
 - name: Install Java
   tags: elasticsearch
-  yum: name=java-1.8.0-openjdk state=installed
+  yum: name=java-1.8.0-openjdk state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Enable Oracle Java repository permanently
@@ -32,5 +32,5 @@
 #
 #- name: Install Java
 #  tags: elasticsearch
-#  apt: name=oracle-java8-installer update_cache=yes state=installed
+#  apt: name=oracle-java8-installer update_cache=yes state=present
 #  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'

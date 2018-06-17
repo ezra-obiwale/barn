@@ -8,12 +8,12 @@
 
 - name: Install MySQL
   tags: mysql
-  yum: name=mysql-server state=installed
+  yum: name=mysql-server state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install MySQL
   tags: mysql
-  apt: name=mysql-server state=installed
+  apt: name=mysql-server state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Make sure MySQL is running and started on boot
@@ -28,12 +28,12 @@
 
 - name: Install MySQL-python
   tags: mysql
-  yum: name=MySQL-python state=installed
+  yum: name=MySQL-python state=present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install MySQL-python
   tags: mysql
-  apt: name=python-mysqldb state=installed
+  apt: name=python-mysqldb state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Copy .my.cnf file with root password credentials
