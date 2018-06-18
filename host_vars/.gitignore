@@ -2,4 +2,5 @@
 !.gitignore
 !centos7-test
 !localhost
+!example
 !ubuntu-test

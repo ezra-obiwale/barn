@@ -1,0 +1,42 @@
+# Let's Encrypt settings
+enable_ssl: true
+letsencrypt_email: admin@example.com
+
+# Extra PHP packages
+php_extra_packages:
+  - php7.2-common
+  - php7.2-xmlrpc
+  - php7.2-soap
+  - php7.2-gd
+  - php7.2-cli
+  - php7.2-intl
+
+# PHP memory limit
+php_memory_limit: "512M"
+
+# A list of virtual hosts
+virtualhosts:
+  example:
+    servernames:
+    - api.example.com
+    project_type: php
+    public_dir_path: public
+    run_queue_worker: false
+    queue_worker_timeout: 60
+    has_scheduled_jobs: false
+    run_horizon: false
+    repository:
+      url: git@github.com:example/app.git
+      branch: master
+      user: root
+    post_install_commands:
+      - composer install
+    
+# MySQL root password
+mysql_root_password: root
+
+# List of MySQL databases
+mysql_databases:
+  example:
+    mysql_user: example_user
+    mysql_password: example_password
