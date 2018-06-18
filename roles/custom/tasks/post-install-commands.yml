@@ -2,3 +2,4 @@
 - name: Run post install commands
   shell: "{{ item }}"
   with_dict: "{{ virtualhosts }}"
+  with_items: {{ item.value.post_install_commands }}

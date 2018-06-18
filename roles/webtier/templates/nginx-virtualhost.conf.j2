@@ -13,14 +13,23 @@ server {
 #        autoindex on;
     }
 
+    {% if item.value.project_type != 'html' %}
+    # pass the PHP scripts to FastCGI server
+    #
     location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_read_timeout 1200;
-        include fastcgi_params;
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
     }
+    {% endif %}
+
+    # location ~ \.php$ {
+    #     try_files $uri =404;
+    #     fastcgi_pass 127.0.0.1:9000;
+    #     fastcgi_index index.php;
+    #     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    #     fastcgi_read_timeout 1200;
+    #     include fastcgi_params;
+    # }
 
     underscores_in_headers on;
 }
