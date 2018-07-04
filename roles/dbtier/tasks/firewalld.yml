@@ -1,12 +1,17 @@
 # file: roles/db/tasks/firewalld.yml
 - name: Install firewalld
+  tags: firewalld
   yum: name=firewalld state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
-- name: Make sure firewalld is running
-  service: name=firewalld state=started
+- name: Install firewalld
+  tags: firewalld
+  apt: name=firewalld state=present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
-- name: Make sure firewalld is started on boot
-  service: name=firewalld enabled=yes
+- name: Make sure firewalld is running and is started on boot
+  tags: firewalld
+  service: name=firewalld state=started enabled=yes
 
 - name: Enable firewall to enable incoming connections to MySQL
   firewalld: service=mysql permanent=true state=enabled zone=public immediate=true

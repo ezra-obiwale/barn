@@ -1,0 +1,17 @@
+# file: roles/webtier/tasks/phpmyadmin.yml
+- name: Install phpmyadmin
+  tags: phpmyadmin
+  apt: name=phpmyadmin state=present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Install phpmyadmin
+  tags: phpmyadmin
+  apt: name=phpmyadmin state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Expose phpmyadmin
+  tags: phpmyadmin
+  file: src=/usr/share/phpmyadmin dest=/var/www/html state=link
+
+- name: Restart mysql
+  service: name=mysql state=restarted

@@ -21,6 +21,7 @@ virtualhosts:
     - api.example.com
     project_type: php
     public_dir_path: public
+    dotenv_file: .env
     run_queue_worker: false
     queue_worker_timeout: 60
     has_scheduled_jobs: false

@@ -33,4 +33,4 @@
     
 - name: Set permissions on /var/www
   tags: nginx
-  file: path=/var/www mode=0755 recurse=yes
+  file: path=/var/www owner=root group=www-data mode=ug=rwX,o=rX recurse=yes

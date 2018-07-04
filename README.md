@@ -104,6 +104,15 @@ Since you storing highly confidential information like production database passw
 
 ## Running Barn
 
+### Ensure Python3 is installed on the remote server
+
+> `sudo apt-get install python3 -y`
+
+### Create and copy ssh_key to remote server
+
+> - `ssh-keygen -t rsa -C "name@example.org"`
+> - `ssh-copy-id user@server`
+
 ### Checking SSH access
 After you have done with the configuration make sure you have SSH access to the servers that listed on the inventory file. You can test this by using the ping module. Troubleshooting the SSH connection is the out of scope of this repository. Please note that you can set the SSH user and port in the inventory file, see the development for example.
 
@@ -116,10 +125,15 @@ localhost | SUCCESS => {
 ```
 
 ### Running the Playbook
+
 You can run the playbook on all hosts with the following command:
+
 ```shell
 ansible-playbook -i inventory site.yml
 ```
+
+If connecting to server with password instead of ssh keys, use option `--ask-become-pass`
+
 Provisioning takes a while for the first time so go grab a coffee. If there were no problems, you should have readily provisioned machine and you can deploy your Laravel application to the /var/www/`virtualhosts.name` folder.  
 
 ### Running custom playbooks

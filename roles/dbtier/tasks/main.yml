@@ -1,4 +1,5 @@
 #file: roles/dbtier/tasks/main.yml
 - include_tasks: mariadb.yml
 # - include_tasks: mysql.yml
-# - include_tasks: firewalld.yml
+- include_tasks: firewalld.yml
+- include_tasks: phpmyadmin.yml

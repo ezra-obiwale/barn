@@ -1,5 +1,5 @@
 server {
-    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path | default("public") }};
+    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path }};
     index index.{{ item.value.project_type | default('php') }};
 
     server_name {{ item.value.servernames | join(" ") }};
