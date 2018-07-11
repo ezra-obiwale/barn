@@ -1,8 +1,16 @@
-# Let's Encrypt settings
-enable_ssl: true
-letsencrypt_email: admin@example.com
+# WEB SERVERS
 
-# Extra PHP packages
+# COMPOSER
+composer: true
+
+# NGINX
+nginx: true
+
+# NODEJS 8.x
+nodejs: true
+
+# PHP 7.2
+php: true
 php_extra_packages:
   - php7.2-common
   - php7.2-xmlrpc
@@ -10,9 +18,20 @@ php_extra_packages:
   - php7.2-gd
   - php7.2-cli
   - php7.2-intl
-
-# PHP memory limit
 php_memory_limit: "512M"
+
+# REDIS
+redis: true
+
+# SELINUX (CentOS and RedHat)
+selinux: true
+
+# YARN
+yarn: true
+
+# LET'S ENCRYPT
+ssl: true
+letsencrypt_email: admin@example.com
 
 # A list of virtual hosts
 virtualhosts:

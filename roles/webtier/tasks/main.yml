@@ -1,22 +1,36 @@
 # file: roles/webtier/tasks/main.yml
 - include_tasks: javascript.yml
+  when: nodejs|default(true)|bool == true || yarn|default(true)|bool == true
 - include_tasks: remi.yml
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+  when: 
+    - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - php|default(true)|bool == true
 - include_tasks: ondrej.yml
-  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'  
+  when: 
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'  
+    - php|default(true)|bool == true
 - include_tasks: php.yml
+  when: php|default(true)|bool == true
 - include_tasks: php-fpm.yml
+  when: php|default(true)|bool == true
 - include_tasks: composer.yml
+  when: composer|default(true)|bool == true
 - include_tasks: nginx.yml
+  when: nginx|default(true)|bool == true
 - include_tasks: git-repositories.yml
 - include_tasks: dotenv.yml
 - include_tasks: cron.yml
 - include_tasks: firewalld.yml
-- include_tasks: letsencrypt.yml
-  when: enable_ssl|default(false)|bool == true
+- include_tasks: ssl.yml
+  when: ssl|default(false)|bool == true
+# - include_tasks: letsencrypt.yml
+#   when: ssl|default(false)|bool == true
 - include_tasks: nginx-ssl.yml
-  when: enable_ssl|default(false)|bool == true
+  when: nginx|default(true)|bool == true and ssl|default(false)|bool == true
 - include_tasks: redis.yml
+  when: redis|default(false)|bool == true
 - include_tasks: selinux.yml
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+  when: 
+    - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - selinux|default(true)|bool == true
 

@@ -13,5 +13,9 @@
   tags: phpmyadmin
   file: src=/usr/share/phpmyadmin dest=/var/www/html state=link
 
+- name: Ensure session directory exist
+  tags: phpmyadmin
+  file: src=/var/lib/php/session mode=ug=rwX,o=wX state=directory
+
 - name: Restart mysql
   service: name=mysql state=restarted

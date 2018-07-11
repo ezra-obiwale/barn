@@ -16,3 +16,8 @@
   become_user: "{{ item.value.repository.user | default(root) }}"
   notify:
     - Restart nginx
+
+- name: Set repository user as the directory owner
+  tags: git-repositories
+  file: path="/var/www/{{ item.key }}" owner="{{ item.value.repository.user }}"
+  with_dict: "{{ virtualhosts }}"
