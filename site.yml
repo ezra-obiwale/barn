@@ -3,3 +3,4 @@
 - import_playbook: dbservers.yml
 - import_playbook: queueservers.yml
 - import_playbook: elasticsearchservers.yml
+  when: elasticsearch|default(false)|bool == true

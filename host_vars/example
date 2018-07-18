@@ -1,15 +1,27 @@
-# WEB SERVERS
+# COMMON ----------------------------------------------------------------------------
 
-# COMPOSER
+## FIREWALLD
+firewalld: true
+
+## REDIS
+redis: true
+
+# WEB SERVERS -----------------------------------------------------------------------
+
+## COMPOSER
 composer: true
 
-# NGINX
+## LET'S ENCRYPT
+ssl: true
+letsencrypt_email: admin@example.com
+
+## NGINX
 nginx: true
 
-# NODEJS 8.x
+## NODEJS 8.x
 nodejs: true
 
-# PHP 7.2
+## PHP 7.2
 php: true
 php_extra_packages:
   - php7.2-common
@@ -20,18 +32,39 @@ php_extra_packages:
   - php7.2-intl
 php_memory_limit: "512M"
 
-# REDIS
-redis: true
-
-# SELINUX (CentOS and RedHat)
+## SELINUX (CentOS and RedHat)
 selinux: true
 
-# YARN
+## YARN
 yarn: true
 
-# LET'S ENCRYPT
-ssl: true
-letsencrypt_email: admin@example.com
+# DB SERVERS -----------------------------------------------------------------------------
+    
+# MYSQL
+mysql: false
+mysql_root_password: root
+
+# MARIADB
+mariadb: true
+mariadb_root_password: root
+
+# PHPMYADMIN
+phpmyadmin: true
+phpmyadmin_directory: /var/www/html
+#phpmyadmin_virtualhost: pma.example.com
+
+# ELASTIC SEARCH
+elasticsearch: false
+
+# QUEUE SERVERS -------------------------------------------------------------------------
+
+## BEANSTALK
+beanstalk: false
+
+## SUPERVISOR
+supervisor: true
+
+# VIRTUAL HOSTS --------------------------------------------------------------------------
 
 # A list of virtual hosts
 virtualhosts:
@@ -45,18 +78,14 @@ virtualhosts:
     queue_worker_timeout: 60
     has_scheduled_jobs: false
     run_horizon: false
+    https: true
+    database:
+      name: database_name
+      user: database_user
+      password: "@database_password"
     repository:
       url: git@github.com:example/app.git
       branch: master
       user: root
-    post_install_commands:
+    custom_commands:
       - composer install
-    
-# MySQL root password
-mysql_root_password: root
-
-# List of MySQL databases
-mysql_databases:
-  example:
-    mysql_user: example_user
-    mysql_password: example_password

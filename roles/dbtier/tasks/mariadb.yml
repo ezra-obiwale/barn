@@ -42,17 +42,19 @@
 
 - name: Update mariadb root password for all root accounts
   tags: mariadb
-  mysql_user: check_implicit_admin=yes name=root host=localhost password={{ mysql_root_password | default('root') }}
+  mysql_user: check_implicit_admin=yes name=root host=localhost password={{ mariadb_root_password | default('root') }}
 
 - name: Create MariaDB databases
   tags: mariadb
-  mysql_db: name={{ item.key }} state=present
-  with_dict: "{{ mysql_databases }}"
+  mysql_db: name={{ item.value.database.name }} state=present
+  with_dict: "{{ virtualhosts }}"
+  when: item.value.database|default(false)|bool == true
 
 - name: Create application database user
   tags: mariadb
-  mysql_user: name={{ item.value.mysql_user }} host=localhost password={{ item.value.mysql_password }} priv={{ item.key }}.*:ALL
-  with_dict: "{{ mysql_databases }}"
+  mysql_user: name={{ item.value.database.user }} host=localhost password={{ item.value.database.password }} priv={{ item.value.database.name }}.*:ALL
+  with_dict: "{{ virtualhosts }}"
+  when: item.value.database|default(false)|bool == true
 
 - name: Delete anonymous MariaDB server user for {{ ansible_hostname }}
   tags: mariadb

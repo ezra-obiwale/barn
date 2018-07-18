@@ -36,8 +36,8 @@
 - name: Upgrade all packages
   apt: update_cache=yes
   when: 
-    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
     - yarn|default(true)|bool == true and yarn_is_installed is failed
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Install yarn
   tags: javascript-yarn

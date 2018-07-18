@@ -46,13 +46,15 @@
 
 - name: Create MySQL databases
   tags: mysql
-  mysql_db: name={{ item.key }} state=present
-  with_dict: "{{ mysql_databases }}"
+  mysql_db: name={{ item.value.database.name }} state=present
+  with_dict: "{{ virtualhosts }}"
+  when: item.value.database|default(false)|bool == true
 
 - name: Create application database user
   tags: mysql
-  mysql_user: name={{ item.value.mysql_user }} host=localhost password={{ item.value.mysql_password }} priv={{ item.key }}.*:ALL
-  with_dict: "{{ mysql_databases }}"
+  mysql_user: name={{ item.value.database.user }} host=localhost password={{ item.value.database.password }} priv={{ item.value.database.name }}.*:ALL
+  with_dict: "{{ virtualhosts }}"
+  when: item.value.database|default(false)|bool == true
 
 - name: Delete anonymous MySQL server user for {{ ansible_hostname }}
   tags: mysql

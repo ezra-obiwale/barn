@@ -23,13 +23,13 @@
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Check if Diffie-Hellman group exists
-  tags: letsencrypt2
+  tags: letsencrypt
   stat:
     path: /etc/ssl/certs/dhparam.pem
   register: group_exists
 
 - name: Generate a strong 2048 bit Diffie-Hellman group
-  tags: letsencrypt2
+  tags: letsencrypt
   shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
   when: group_exists.stat.exists == false
 

@@ -1,5 +1,9 @@
 #file: roles/dbtier/tasks/main.yml
 - include_tasks: mariadb.yml
-# - include_tasks: mysql.yml
+  when: mariadb|default(false)|bool == true
+- include_tasks: mysql.yml
+  when: mysql|default(false)|bool == true
 - include_tasks: firewalld.yml
+  when: firewalld|default(false)|bool == true
 - include_tasks: phpmyadmin.yml
+  when: phpmyadmin|default(false)|bool == true
