@@ -5,7 +5,7 @@ server {
     index index.php;
 
     location / {
-        try_files $uri $uri/ /index.?$args;
+        try_files $uri $uri/ /index.php;
 #        autoindex on;
     }
 
@@ -24,8 +24,8 @@ server {
 
     listen [::]:443 ssl;
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/phpmyadmin/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/phpmyadmin/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ phpmyadmin_virtualhost }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ phpmyadmin_virtualhost }}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 

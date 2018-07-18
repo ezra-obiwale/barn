@@ -51,8 +51,8 @@ mariadb_root_password: root
 
 # PHPMYADMIN
 phpmyadmin: true
-phpmyadmin_directory: /var/www/html
-#phpmyadmin_virtualhost: pma.example.com
+phpmyadmin_directory: /var/www
+phpmyadmin_virtualhost: pma.example.com
 phpmyadmin_https: true
 
 # ELASTIC SEARCH
@@ -73,6 +73,7 @@ virtualhosts:
   example:
     servernames:
     - api.example.com
+    https: true
     project_type: php
     public_dir_path: public
     dotenv_file: .env
@@ -80,7 +81,6 @@ virtualhosts:
     queue_worker_timeout: 60
     has_scheduled_jobs: false
     run_horizon: false
-    https: true
     database:
       name: database_name
       user: database_user

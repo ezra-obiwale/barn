@@ -22,7 +22,7 @@
   tags: ssh
   shell: acme.sh --issue -d {{ phpmyadmin_virtualhost }} -w {{ phpmyadmin_directory | default('/var/www/html') }}/phpmyadmin
   when: 
-    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_virtualhost is defined
     - phpmyadmin_https|default(true)|bool == true
   register: issued_pma_cert
 

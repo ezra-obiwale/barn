@@ -10,7 +10,7 @@
   tags: nginx-ssl-phpmyadmin
   template: src=nginx-ssl-pma-virtualhost.conf.j2 dest=/etc/nginx/conf.d/phpmyadmin.conf
   when: 
-    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_virtualhost is defined
     - phpmyadmin_https|default(true)|bool == true
   notify:
     - Restart nginx

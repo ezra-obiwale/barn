@@ -1,6 +1,6 @@
 # file: roles/webtier/tasks/main.yml
 - include_tasks: javascript.yml
-  when: nodejs|default(true)|bool == true || yarn|default(true)|bool == true
+  when: nodejs|default(true)|bool == true or yarn|default(true)|bool == true
 - include_tasks: remi.yml
   when: 
     - php|default(true)|bool == true

@@ -47,13 +47,13 @@
   notify:
     - Restart nginx
   when: 
-    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_virtualhost is defined
     - phpmyadmin_https|default(true)|bool == true
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install / renew certificates
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.value.servernames | join(",") }}
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.value.servernames | join(",") }} --server https://acme-v02.api.letsencrypt.org/directory
   with_dict: "{{ virtualhosts }}"
   notify:
     - Restart nginx
@@ -61,11 +61,11 @@
 
 - name: Install / renew certificates
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }}
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }} --server https://acme-v02.api.letsencrypt.org/directory
   notify:
     - Restart nginx
   when:
-    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_virtualhost is defined
     - phpmyadmin_https|default(true)|bool == true
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
