@@ -1,0 +1,44 @@
+server {
+    server_name  {{ phpmyadmin_virtualhost }};
+
+    root   {{ phpmyadmin_directory | default('/var/www/html') }}/phpmyadmin;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.?$args;
+#        autoindex on;
+    }
+
+    # pass the PHP scripts to FastCGI server
+    #
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+    }
+
+    location ~ /.well-known {
+        allow all;
+    }
+
+    underscores_in_headers on;
+
+    listen [::]:443 ssl;
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/phpmyadmin/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/phpmyadmin/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+}
+
+server {
+    if ($host = {{ phpmyadmin_virtualhost }}) {
+        return 301 https://$host$request_uri;
+    }
+
+    listen 80;
+    listen [::]:80;
+    server_name {{ phpmyadmin_virtualhost }};
+    return 404;
+
+}

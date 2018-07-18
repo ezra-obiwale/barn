@@ -33,13 +33,23 @@
   shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
   when: group_exists.stat.exists == false
 
-- name: Install / renew certificates
+- name: Install / renew virtualhosts certificates
   tags: letsencrypt
   shell: certbot certonly --noninteractive --webroot --email {{ letsencrypt_email }} --agree-tos --renew-by-default -w /var/www/{{ item.key }}/public -d {{ item.value.servernames | join(" -d ") }}
   with_dict: "{{ virtualhosts }}"
   notify:
     - Restart nginx
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Install / renew phpmyadmin certificates
+  tags: letsencrypt
+  shell: certbot certonly --noninteractive --webroot --email {{ letsencrypt_email }} --agree-tos --renew-by-default -w /var/www/phpmyadmin -d {{ phpmyadmin_virtualhost }}
+  notify:
+    - Restart nginx
+  when: 
+    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_https|default(true)|bool == true
+    - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install / renew certificates
   tags: letsencrypt
@@ -48,6 +58,16 @@
   notify:
     - Restart nginx
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Install / renew certificates
+  tags: letsencrypt
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }}
+  notify:
+    - Restart nginx
+  when:
+    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_https|default(true)|bool == true
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
 - name: Add auto renewal for certificates to crontab
   tags: letsencrypt

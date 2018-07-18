@@ -1,8 +1,8 @@
 server {
+    server_name {{ item.value.servernames | join(" ") }};
+
     root   /var/www/{{ item.key }}/{{ item.value.public_dir_path }};
     index index.{{ item.value.project_type | default('php') }};
-
-    server_name {{ item.value.servernames | join(" ") }};
 
     location / {
         try_files $uri $uri/ /index.{{ item.value.project_type | default('php') }}?$args;

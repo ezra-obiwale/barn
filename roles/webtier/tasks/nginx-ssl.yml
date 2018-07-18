@@ -1,7 +1,16 @@
 # file: roles/webtier/tasks/nginx.yml
 - name: Make sure nginx ssl virtual hosts are configured
-  tags: nginx
+  tags: nginx-ssl
   template: src=nginx-ssl-virtualhost.conf.j2 dest=/etc/nginx/conf.d/{{ item.key }}.conf
   with_dict: "{{ virtualhosts }}"
+  notify:
+    - Restart nginx
+
+- name: Create nginx ssl virtual host for phpmyadmin
+  tags: nginx-ssl-phpmyadmin
+  template: src=nginx-ssl-pma-virtualhost.conf.j2 dest=/etc/nginx/conf.d/phpmyadmin.conf
+  when: 
+    - phpmyadmin_virtualhost|default(false)|bool == true
+    - phpmyadmin_https|default(true)|bool == true
   notify:
     - Restart nginx

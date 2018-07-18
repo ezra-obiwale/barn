@@ -12,7 +12,7 @@ redis: true
 composer: true
 
 ## LET'S ENCRYPT
-ssl: true
+ssl: false
 letsencrypt_email: admin@example.com
 
 ## NGINX
@@ -23,6 +23,7 @@ nodejs: true
 
 ## PHP 7.2
 php: true
+php_memory_limit: "512M"
 php_extra_packages:
   - php7.2-common
   - php7.2-xmlrpc
@@ -30,7 +31,7 @@ php_extra_packages:
   - php7.2-gd
   - php7.2-cli
   - php7.2-intl
-php_memory_limit: "512M"
+  - php7.2-curl
 
 ## SELINUX (CentOS and RedHat)
 selinux: true
@@ -52,6 +53,7 @@ mariadb_root_password: root
 phpmyadmin: true
 phpmyadmin_directory: /var/www/html
 #phpmyadmin_virtualhost: pma.example.com
+phpmyadmin_https: true
 
 # ELASTIC SEARCH
 elasticsearch: false

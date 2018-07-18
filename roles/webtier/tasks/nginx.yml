@@ -30,6 +30,13 @@
   with_dict: "{{ virtualhosts }}"
   notify:
     - Restart nginx
+
+- name: Create nginx virtual host for phpmyadmin
+  tags: nginx-phpmyadmin
+  template: src=nginx-pma-virtualhost.conf.j2 dest=/etc/nginx/conf.d/phpmyadmin.conf
+  when: phpmyadmin_virtualhost|default(false)|bool == true
+  notify:
+    - Restart nginx
     
 - name: Set permissions on /var/www
   tags: nginx
