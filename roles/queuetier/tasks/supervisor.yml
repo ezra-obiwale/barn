@@ -29,6 +29,16 @@
   notify:
     - Reload supervisord config
 
+- name: Make sure custom supervisor jobs are configured
+  tags: supervisor
+  template: src=custom-supervisor.conf.j2 dest=/etc/supervisor/conf.d/{{ item.name }}-worker.ini
+  with_subelements:
+    - "{{ virtualhosts }}"
+    - item.value.custom_supervisor_workers
+  when: ansible_distribution == 'Ubuntu'
+  notify:
+    - Reload supervisord config
+
 - name: Make sure supervisor job is configured
   tags: supervisor
   template: src=supervisor.conf.j2 dest=/etc/supervisor/conf.d/{{ item.key }}-worker.conf
@@ -36,6 +46,16 @@
   when: item.value.run_queue_worker|default(false)|bool == true and ansible_distribution == 'Ubuntu'
   vars:
     user: www-data
+  notify:
+    - Reload supervisord config (Debian)
+
+- name: Make sure custom supervisor jobs are configured
+  tags: supervisor
+  template: src=custom-supervisor.conf.j2 dest=/etc/supervisor/conf.d/{{ item.name }}-worker.conf
+  with_subelements:
+    - "{{ virtualhosts }}"
+    - item.value.custom_supervisor_workers
+  when: ansible_distribution == 'Ubuntu'
   notify:
     - Reload supervisord config (Debian)
 

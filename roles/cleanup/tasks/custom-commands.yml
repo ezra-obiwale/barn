@@ -1,7 +1,7 @@
 # file: roles/custom/tasks/custom-commands.yml
 - name: Run custom commands
   tags: custom_commands
-  shell: "{{ item }}"
+  shell: {{ item }}
   with_subelements: 
     - "{{ virtualhosts }}"
     - item.value.custom_commands

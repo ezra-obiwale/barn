@@ -20,3 +20,8 @@
 - name: Enable firewall to enable incoming HTTPS
   tags: firewalld
   firewalld: service=https permanent=true state=enabled zone=public immediate=true
+
+- name: Enable firewall to custom ports
+  tags: firewalld
+  firewalld: port={{ item }}/tcp permanent=true state=enabled zone=public immediate=true
+  with_items: "{{ firewalld_ports }}"

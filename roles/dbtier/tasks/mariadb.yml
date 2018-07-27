@@ -48,17 +48,17 @@
   tags: mariadb
   mysql_db: name={{ item.value.database.name }} state=present
   with_dict: "{{ virtualhosts }}"
+  register: created_databases
   when:
     - item.value.database is defined
     - item.value.database.name is defined
-  register: created_databases
 
 - name: Create application database user
   tags: mariadb
   mysql_user: name={{ item.value.database.user }} host=localhost password={{ item.value.database.password }} priv={{ item.value.database.name }}.*:ALL
   with_dict: "{{ virtualhosts }}"
-  when: 
-    - created_databases == true
+  when:
+    - created_databases is succeeded
     - item.value.database.user is defined
     - item.value.database.password is defined
 

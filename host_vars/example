@@ -2,6 +2,8 @@
 
 ## FIREWALLD
 firewalld: true
+firewalld_ports:
+  - 8080
 
 ## REDIS
 redis: true
@@ -72,7 +74,15 @@ supervisor: true
 virtualhosts:
   example:
     servernames:
-    - api.example.com
+    - example.com
+    redirect:
+    - from: www.example.com
+      to: example.com
+      code: 301
+    websocket:
+      host: example.com
+      path: /ws
+      port: 8080
     https: true
     project_type: php
     public_dir_path: public
@@ -80,6 +90,11 @@ virtualhosts:
     run_queue_worker: false
     queue_worker_timeout: 60
     has_scheduled_jobs: false
+    custom_supervisor_workers:
+      - name: example-worker
+        command: php /var/www/example/artisan custom:command
+        numprocs: 1
+        user: www-data
     run_horizon: false
     database:
       name: database_name

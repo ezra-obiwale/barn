@@ -1,0 +1,8 @@
+# file: cleanup.yml
+- hosts: dbservers
+  become: true
+  become_user: root
+  roles:
+    - common
+    - dbtier
+    - custom

@@ -11,7 +11,7 @@
 
 - name: Expose phpmyadmin
   tags: phpmyadmin
-  file: src=/usr/share/phpmyadmin dest={{ phpmyadmin_directory | default('/var/www/html') }} state=link
+  file: src=/usr/share/phpmyadmin dest={{ phpmyadmin_directory | default('/var/www/html') }}/phpmyadmin state=link
 
 - name: Ensure session directory exist
   tags: phpmyadmin

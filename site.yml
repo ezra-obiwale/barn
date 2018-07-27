@@ -4,3 +4,4 @@
 - import_playbook: queueservers.yml
 - import_playbook: elasticsearchservers.yml
   when: elasticsearch|default(false)|bool == true
+- import_playbook: cleanup.yml

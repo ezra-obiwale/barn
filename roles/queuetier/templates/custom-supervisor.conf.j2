@@ -1,0 +1,9 @@
+[program:{{ item.name }}-worker]
+process_name=%(program_name)s_%(process_num)02d
+command={{ item.command }}
+autostart=true
+autorestart=true
+user={{ item.user|default('www-data') }}
+numprocs={{ item.numprocs|default(1) }}
+redirect_stderr=true
+stdout_logfile=/var/log/{{ item.name }}-worker.log
