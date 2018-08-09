@@ -53,14 +53,15 @@
     - item.value.database.name is defined
   register: created_databases
 
-- name: Create application database user
+- name: Create application database users
   tags: mysql
-  mysql_user: name={{ item.value.database.user }} host=localhost password={{ item.value.database.password }} priv={{ item.value.database.name }}.*:ALL
-  with_dict: "{{ virtualhosts }}"
+  mysql_user: name={{ item.item.value.database.user }} host=localhost password={{ item.item.value.database.password }} priv={{ item.item.value.database.name }}.*:ALL
+  with_items: "{{ created_databases.results }}"
   when: 
-    - created_databases == true
-    - item.value.database.user is defined
-    - item.value.database.password is defined
+    - item is succeeded
+    - item.item.value.database is defined
+    - item.item.value.database.user is defined
+    - item.item.value.database.password is defined
 
 - name: Delete anonymous MySQL server user for {{ ansible_hostname }}
   tags: mysql

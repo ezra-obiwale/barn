@@ -1,25 +1,25 @@
 # file: roles/dbtier/tasks/mariadb.yml
-# - name: Install package for MariaDB community edition repository
-#   tags: mariadb
-#   yum:
-#     name: "http://repo.mariadb.com/mariadb-community-release-el{{ ansible_distribution_major_version }}-5.noarch.rpm"
-#     state: present
-#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+- name: Install package for MariaDB community edition repository
+  tags: mariadb
+  yum:
+    name: "http://repo.mariadb.com/mariadb-community-release-el{{ ansible_distribution_major_version }}-5.noarch.rpm"
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
-# - name: Install MariaDB
-#   tags: mariadb
-#   yum: name=mariadb-server state=present
-#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+- name: Install MariaDB
+  tags: mariadb
+  yum: name=mariadb-server state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Install MariaDB
   tags: mariadb
   apt: name=mariadb-server state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
-# - name: Make sure MariaDB is running and started on boot
-#   tags: mariadb
-#   service: name=mysqld state=started enabled=yes
-#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+- name: Make sure MariaDB is running and started on boot
+  tags: mariadb
+  service: name=mysqld state=started enabled=yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
 
 - name: Make sure MariaDB is running and started on boot
   tags: mariadb
@@ -53,14 +53,15 @@
     - item.value.database is defined
     - item.value.database.name is defined
 
-- name: Create application database user
+- name: Create application database users
   tags: mariadb
-  mysql_user: name={{ item.value.database.user }} host=localhost password={{ item.value.database.password }} priv={{ item.value.database.name }}.*:ALL
-  with_dict: "{{ virtualhosts }}"
+  mysql_user: name={{ item.item.value.database.user }} host=localhost password={{ item.item.value.database.password }} priv={{ item.item.value.database.name }}.*:ALL
+  with_items: "{{ created_databases.results }}"
   when:
-    - created_databases is succeeded
-    - item.value.database.user is defined
-    - item.value.database.password is defined
+    - item is succeeded
+    - item.item.value.database is defined
+    - item.item.value.database.user is defined
+    - item.item.value.database.password is defined
 
 - name: Delete anonymous MariaDB server user for {{ ansible_hostname }}
   tags: mariadb

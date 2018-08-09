@@ -48,17 +48,17 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
-    - item.stat.exists == false
+    - item.stat.exists == False
 
 - name: Install / renew virtualhosts certificates
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.item.value.servernames | join(" -d ") }} --server https://acme-v02.api.letsencrypt.org/directory
-  with_dict: "{{ certs_check.results }}"
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.item.value.servernames | join(" -d ") }} --server https://acme-staging-v02.api.letsencrypt.org/directory
+  with_items: "{{ certs_check.results }}"
   notify:
     - Restart nginx
   when: 
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-    - item.stat.exists == false
+    - item.stat.exists == False
 
 - name: Check existence of phpmyadmin certificate
   tags: letsencrypt
@@ -77,17 +77,17 @@
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
     - pma_check is defined
-    - pma_check.stat.exists == false
+    - pma_check.stat.exists == False
 
 - name: Install / renew phpmyadmin certificate
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }} --server https://acme-v02.api.letsencrypt.org/directory
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }} --server https://acme-staging-v02.api.letsencrypt.org/directory
   notify:
     - Restart nginx
   when:
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
     - pma_check is defined
-    - pma_check.stat.exists == false
+    - pma_check.stat.exists == False
 
 - name: Add auto renewal for certificates to crontab
   tags: letsencrypt

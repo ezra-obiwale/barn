@@ -11,8 +11,8 @@ server {
     location / {
         try_files $uri $uri/ /index.{{ item.value.project_type | default('php') }}?$args;
     }
-    {% if item.value.websocket %}
-    location {item.value.websocket.path} {
+    {% if item.value.websocket is defined %}
+    location {{item.value.websocket.path}} {
         proxy_pass http://{{ item.value.websocket.host }}:{{ item.value.websocket.port }};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -32,9 +32,12 @@ server {
 
     underscores_in_headers on;
 }
+
+{% if item.value.redirect is defined %}
 {% for redirect in item.value.redirect %}
 server { 
     server_name {{ redirect.from }}; 
     return {{ redirect.code|default(301) }} http://{{ redirect.to }}$request_uri; 
 }
 {% endfor %}
+{% endif %}
