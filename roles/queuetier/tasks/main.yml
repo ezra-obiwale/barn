@@ -1,7 +1,7 @@
 # file: roles/queuetier/tasks/main.yml
-- include_tasks: beanstalk.yml
-  when: beanstalk|default(false)|bool == true
-- include_tasks: redis.yml
-  when: redis|default(false)|bool == true
+# - include_tasks: beanstalk.yml
+#   when: beanstalk|default(false)|bool == true
+# - include_tasks: redis.yml
+#   when: redis|default(false)|bool == true
 - include_tasks: supervisor.yml
   when: supervisor|default(false)|bool == true

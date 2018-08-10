@@ -100,6 +100,7 @@ virtualhosts:
       name: database_name
       user: database_user
       password: "@database_password"
+      dump: /path/to/file.sql
     repository:
       url: git@github.com:example/app.git
       branch: master

@@ -63,6 +63,37 @@
     - item.item.value.database.user is defined
     - item.item.value.database.password is defined
 
+- name: Check database dump file doesn't already exists
+  stat:
+    path: /var/www/{{ item.item.key }}.sql
+  with_items: "{{ created_databases.results }}"
+  when:
+    - item is succeeded
+    - item.item.value.database is defined
+    - item.item.value.database.dump is defined
+  register: absent_dump_files
+
+- name: Copy database dump files
+  copy:
+    src: "{{ item.item.item.value.database.dump }}"
+    dest: /var/www/{{ item.item.item.key }}.sql
+  with_items: "{{ absent_dump_files.results }}"
+  when: 
+    - item.stat is defined
+    - item.stat.exists == false
+  register: dump_files
+
+- name: Dump database files
+  mysql_db:
+    name: "{{ item.item.item.item.value.database.name }}"
+    state: import
+    target: "{{ item.dest }}"
+  with_items: "{{ dump_files.results }}"
+  ignore_errors: yes  
+  when: 
+    - item is succeeded
+    - item.dest is defined
+
 - name: Delete anonymous MariaDB server user for {{ ansible_hostname }}
   tags: mariadb
   action: mysql_user user="" host="{{ ansible_hostname }}" state="absent"
