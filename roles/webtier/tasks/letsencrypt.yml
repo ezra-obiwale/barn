@@ -52,7 +52,7 @@
 
 - name: Install / renew virtualhosts certificates
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.item.value.servernames | join(" -d ") }} --server https://acme-staging-v02.api.letsencrypt.org/directory
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ item.item.value.servernames | join(" -d ") }} --server https://acme-v02.api.letsencrypt.org/directory
   with_items: "{{ certs_check.results }}"
   notify:
     - Restart nginx
@@ -81,7 +81,7 @@
 
 - name: Install / renew phpmyadmin certificate
   tags: letsencrypt
-  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }} --server https://acme-staging-v02.api.letsencrypt.org/directory
+  shell: certbot --nginx --noninteractive --email {{ letsencrypt_email }} --agree-tos --renew-by-default -d {{ phpmyadmin_virtualhost }} --server https://acme-v02.api.letsencrypt.org/directory
   notify:
     - Restart nginx
   when:
