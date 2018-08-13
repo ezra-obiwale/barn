@@ -91,10 +91,10 @@ virtualhosts:
     queue_worker_timeout: 60
     has_scheduled_jobs: false
     custom_supervisor_workers:
-      - name: example-worker
-        command: php /var/www/example/artisan custom:command
-        numprocs: 1
-        user: www-data
+    - name: example-worker
+      command: php /var/www/example/artisan custom:command
+      numprocs: 1
+      user: www-data
     run_horizon: false
     database:
       name: database_name
@@ -104,6 +104,9 @@ virtualhosts:
     repository:
       url: git@github.com:example/app.git
       branch: master
-      user: root
-    custom_commands:
+      user: deployer
+    cleanup:
+    - user: deployer
+      commands:
       - composer install
+      - php artisan migrate --force

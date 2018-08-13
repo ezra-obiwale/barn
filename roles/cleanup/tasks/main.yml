@@ -1,5 +1,6 @@
-# file: roles/custom/tasks/main.yml
-- include_tasks: "{{ item }}"
-  tags: custom
-  with_fileglob:
-    - '*.yml'
+# file: roles/cleanup/tasks/main.yml
+- include_tasks: commands.yml
+  with_dict: "{{ virtualhosts }}"
+  when: host.value.cleanup is defined
+  loop_control:
+    loop_var: host

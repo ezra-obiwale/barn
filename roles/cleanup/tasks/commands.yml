@@ -1,0 +1,8 @@
+# file: roles/custom/tasks/custom-commands.yml
+- name: Run commands
+  tags: cleanup-commands
+  shell: cd /var/www/{{ host.key }} && {{ item.commands|join(' && ') }}
+  become: true
+  become_user: item.user|default('root')
+  with_items: "{{ host.value.cleanup }}"
+  when: item.commands is defined
