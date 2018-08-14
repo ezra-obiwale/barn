@@ -1,7 +1,7 @@
 server {
     server_name {{ item.value.servernames | join(" ") }};
 
-    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path }};
+    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path | default('') }};
     index index.{{ item.value.project_type | default('php') }};
 
     location / {
@@ -22,8 +22,11 @@ server {
     #
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
+        {% if fpm_sock.stat.exists == true %}
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        {% else %}
         fastcgi_pass 127.0.0.1:9000;
-        #fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        {% endif %}
     }
     {% endif %}
 

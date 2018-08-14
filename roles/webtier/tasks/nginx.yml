@@ -24,12 +24,30 @@
   tags: nginx
   service: name=nginx state=started enabled=yes
 
+- name: Check existence of virtualhost ssl certificates
+  tags: nginx
+  stat:
+    path: /etc/letsencrypt/live/{{ item.value.servernames[0] }}/fullchain.pem
+  with_dict: "{{ virtualhosts }}"
+  register: vhost_certs
+
 - name: Make sure nginx virtual hosts are configured
   tags: nginx
-  template: src=nginx-virtualhost.conf.j2 dest=/etc/nginx/conf.d/{{ item.key }}.conf
-  with_dict: "{{ virtualhosts }}"
+  template: src=nginx-virtualhost.conf.j2 dest=/etc/nginx/conf.d/{{ item.item.key }}.conf
+  with_items: "{{ vhost_certs.results }}"
   notify:
     - Restart nginx
+  when:
+    - item.stat.exists == false
+
+- name: Check existence of phpmyadmin ssl certificate
+  tags: nginx
+  stat:
+    path: /etc/letsencrypt/live/{{ phpmyadmin_virtualhost }}/fullchain.pem
+  register: pma_cert
+  when:
+    - phpmyadmin == true
+    - phpmyadmin_virtualhost is defined
 
 - name: Create nginx virtual host for phpmyadmin
   tags: nginx-phpmyadmin
@@ -37,6 +55,9 @@
   when: phpmyadmin_virtualhost is defined
   notify:
     - Restart nginx
+  when:
+    - pma_cert is defined
+    - pma_cert.stat.exists == false
     
 - name: Set permissions on /var/www
   tags: nginx

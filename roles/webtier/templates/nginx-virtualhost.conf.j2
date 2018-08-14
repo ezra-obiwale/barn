@@ -1,40 +1,43 @@
 server {
     listen       80;
-    server_name  {{ item.value.servernames | join(" ") }};
+    server_name  {{ item.item.value.servernames | join(" ") }};
 
-    root   /var/www/{{ item.key }}/{{ item.value.public_dir_path }};
-    index index.{{ item.value.project_type | default('php') }};
+    root   /var/www/{{ item.item.key }}/{{ item.item.value.public_dir_path | default('') }};
+    index index.{{ item.item.value.project_type | default('php') }};
 
-    access_log  /var/log/nginx/{{ item.key }}-access.log;
-    error_log  /var/log/nginx/{{ item.key }}-error.log error;
+    access_log  /var/log/nginx/{{ item.item.key }}-access.log;
+    error_log  /var/log/nginx/{{ item.item.key }}-error.log error;
 
     location / {
-        try_files $uri $uri/ /index.{{ item.value.project_type | default('php') }}?$args;
+        try_files $uri $uri/ /index.{{ item.item.value.project_type | default('php') }}?$args;
     }
-    {% if item.value.websocket is defined %}
-    location {{item.value.websocket.path}} {
-        proxy_pass http://{{ item.value.websocket.host }}:{{ item.value.websocket.port }};
+    {% if item.item.value.websocket is defined %}
+    location {{item.item.value.websocket.path}} {
+        proxy_pass http://{{ item.item.value.websocket.host }}:{{ item.item.value.websocket.port }};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
     }
     {% endif %}
 
-    {% if item.value.project_type != 'html' %}
+    {% if item.item.value.project_type != 'html' %}
     # pass the PHP scripts to FastCGI server
     #
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
+        {% if fpm_sock.stat.exists == true %}
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        {% else %}
         fastcgi_pass 127.0.0.1:9000;
-        # fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        {% endif %}
     }
     {% endif %}
 
     underscores_in_headers on;
 }
 
-{% if item.value.redirect is defined %}
-{% for redirect in item.value.redirect %}
+{% if item.item.value.redirect is defined %}
+{% for redirect in item.item.value.redirect %}
 server { 
     server_name {{ redirect.from }}; 
     return {{ redirect.code|default(301) }} http://{{ redirect.to }}$request_uri; 

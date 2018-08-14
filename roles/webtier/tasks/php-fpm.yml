@@ -33,4 +33,8 @@
     - Restart php-fpm (Debian)
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
-
+- name: Check php7.2 fpm sock file exists
+  tag: php-fpm
+  stat:
+    path: "/run/php/php7.2-fpm.sock"
+  register: fpm_sock
