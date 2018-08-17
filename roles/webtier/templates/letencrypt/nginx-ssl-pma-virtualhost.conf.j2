@@ -28,10 +28,10 @@ server {
 
     listen [::]:443 ssl;
     listen 443 ssl;
-    ssl on;
-    ssl_certificate /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/fullchain.pem;
-    ssl_certificate_key /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/key.pem;
-    ssl_trusted_certificate /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/cert.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ phpmyadmin_virtualhost }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ phpmyadmin_virtualhost }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     if ($https = '') {
         return 301 https://$host$request_uri;

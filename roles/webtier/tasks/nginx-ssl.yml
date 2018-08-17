@@ -1,4 +1,93 @@
 # file: roles/webtier/tasks/nginx.yml
+- name: Install Acme.sh
+  tags: nginx-ssl
+  shell: wget -O -  https://get.acme.sh | sh
+
+- name: Enable Acme.sh
+  tags: nginx-ssl
+  shell: source .bashrc
+
+- name: Export acme dns credentials
+  tags: nginx-ssl
+  environment: "{{ acme_dns_credentials }}"
+
+- name: Ensure certificate directory exists
+  tags: nginx-ssl
+  file:
+    path: /etc/nginx/acme
+    state: directory
+
+- name: Check existence of virtualhosts certificates
+  tags: nginx-ssl
+  stat:
+    path: /etc/nginx/acme/{{ item.value.servernames[0] }}/fullchain.pem
+  with_dict: "{{ virtualhosts }}"
+  register: vhost_certs
+  when: item.value.https|default(true)|bool == true
+
+- name: Check existence of phpmyadmin certificate
+  tags: nginx-ssl
+  stat:
+    path: /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/fullchain.pem
+  with_dict: "{{ virtualhosts }}"
+  register: pma_cert
+  when:
+    - phpmyadmin|default(false)|bool == true
+    - phpmyadmin_virtualhost is defined
+
+- name: Issue virtualhosts certificates with DNS challenge
+  tags: nginx-ssl
+  shell: acme.sh --issue -d {{ item.item.value.servernames | join(" -d ") }} --dns {{ item.item.value.acme_dns }}
+  with_items: "{{ vhost_certs }}"
+  register: issued_dns_certs
+  when:
+    - item.exists|default(true)|bool == false
+    - item.item.value.acme_dns is defined
+
+- name: Issue virtualhosts certificates with webroot
+  tags: nginx-ssl
+  shell: acme.sh --issue -d {{ item.item.value.servernames | join(" -d ") }} -w /var/www/{{ item.item.key }}/public
+  with_items: "{{ vhost_certs }}"
+  register: issued_webroot_certs
+  when:
+    - item.exists|default(true)|bool == false
+    - item.item.value.acme_dns is not defined
+
+- name: Issue phpmyadmin certificates
+  tags: nginx-ssl
+  shell: acme.sh --issue -d {{ phpmyadmin_virtualhost }} -w {{ phpmyadmin_directory | default('/var/www/html') }}/phpmyadmin
+  when:
+    - pma_cert.exists == false
+    - phpmyadmin_virtualhost is defined
+    - phpmyadmin_https|default(true)|bool == true
+  register: issued_pma_cert
+
+- name: Install virtualhosts' dns certificates
+  tags: ssh
+  shell: acme.sh --install-cert -d {{ item.item.item.value.servernames | join(" -d ") }} --key-file=/etc/nginx/acme/{{ item.item.item.key }}/key.pem --cert-file=/etc/nginx/acme/{{ item.item.item.key }}/cert.pem --fullchain-file=/etc/nginx/acme/{{ item.item.item.key }}/fullchain.pem --reloadcmd "service nginx force-reload"
+  with_items: "{{ issued_dns_certs }}"
+  notify:
+    - Restart nginx
+  when: 
+    - item is success
+
+- name: Install virtualhosts' webroot certificates
+  tags: ssh
+  shell: acme.sh --install-cert -d {{ item.item.item.value.servernames | join(" -d ") }} --key-file=/etc/nginx/acme/{{ item.item.item.key }}/key.pem --cert-file=/etc/nginx/acme/{{ item.item.item.key }}/cert.pem --fullchain-file=/etc/nginx/acme/{{ item.item.item.key }}/fullchain.pem --reloadcmd "service nginx force-reload"
+  with_items: "{{ issued_webroot_certs }}"
+  notify:
+    - Restart nginx
+  when: 
+    - item is success
+
+- name: Install phpmyadmin certificate
+  tags: ssh
+  shell: acme.sh --install-cert -d {{ phpmyadmin_virtualhost }} --key-file=/etc/nginx/acme/phpmyadmin/key.pem --cert-file=/etc/nginx/acme/phpmyadmin/cert.pem --fullchain-file=/etc/nginx/acme/phpmyadmin/fullchain.pem --reloadcmd "service nginx force-reload"
+  notify:
+    - Restart nginx
+  when: 
+    - issued_pma_cert is success
+
 - name: Make sure nginx ssl virtual hosts are configured
   tags: nginx-ssl
   template: src=nginx-ssl-virtualhost.conf.j2 dest=/etc/nginx/conf.d/{{ item.key }}.conf
@@ -10,8 +99,6 @@
   tags: nginx-ssl-phpmyadmin
   template: src=nginx-ssl-pma-virtualhost.conf.j2 dest=/etc/nginx/conf.d/phpmyadmin.conf
   when: 
-    - phpmyadmin == true
-    - phpmyadmin_virtualhost is defined
-    - phpmyadmin_https|default(true)|bool == true
+    - issued_pma_cert is success
   notify:
     - Restart nginx

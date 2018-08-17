@@ -24,8 +24,8 @@
   when: firewalld|default(false)|bool == true
 # - include_tasks: ssl.yml
 #   when: ssl|default(false)|bool == true
-- include_tasks: letsencrypt.yml
-  when: ssl|default(false)|bool == true
+# - include_tasks: letsencrypt.yml
+#   when: ssl|default(false)|bool == true
 - include_tasks: nginx-ssl.yml
   when: nginx|default(true)|bool == true and ssl|default(false)|bool == true
 - include_tasks: redis.yml

@@ -16,6 +16,9 @@ composer: true
 ## LET'S ENCRYPT
 ssl: false
 letsencrypt_email: admin@example.com
+acme_dns_credentials:
+  CF_Key: dKiLDEqbXRpX_XJrCJmk329nx1ycUHpL7CF
+  CF_Secret: XJrGFpq3Q5eDfK8h28Vfw9
 
 ## NGINX
 nginx: true
@@ -84,6 +87,10 @@ virtualhosts:
       path: /ws
       port: 8080
     https: true
+    acme_dns: dns_cf
+    enforce_https: true
+    enforce_https_exceptions:
+      - api.example.com
     project_type: php
     public_dir_path: public
     dotenv_file: .env

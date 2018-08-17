@@ -38,10 +38,10 @@ server {
 
     listen [::]:443 ssl;
     listen 443 ssl;
-    ssl on;
-    ssl_certificate /etc/nginx/acme/{{ item.value.servernames[0] }}/fullchain.pem;
-    ssl_certificate_key /etc/nginx/acme/{{ item.value.servernames[0] }}/key.pem;
-    ssl_trusted_certificate /etc/nginx/acme/{{ item.value.servernames[0] }}/cert.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ item.value.servernames[0] }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.value.servernames[0] }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     {% if item.value.enforce_https|default(true) %}
     if ($https = '') {

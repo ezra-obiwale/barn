@@ -11,7 +11,7 @@
     version: "{{ item.value.repository.branch | default(master) }}"
     dest: "/var/www/{{ item.key }}"
     accept_hostkey: yes
-    force: no
+    force: yes
   with_dict: "{{ virtualhosts }}"
   become_user: "{{ item.value.repository.user | default(root) }}"
   notify:
