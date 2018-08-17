@@ -17,8 +17,8 @@ composer: true
 ssl: false
 letsencrypt_email: admin@example.com
 acme_dns_credentials:
-  CF_Key: dKiLDEqbXRpX_XJrCJmk329nx1ycUHpL7CF
-  CF_Secret: XJrGFpq3Q5eDfK8h28Vfw9
+  CF_Key: XXXXX
+  CF_Secret: XXXXX
 
 ## NGINX
 nginx: true
