@@ -20,6 +20,8 @@
     validate_certs: no
   register: challenge
   with_dict: "{{ virtualhosts }}"
+  when:
+    - virtualhosts is defined
 
 # perform the necessary steps to fulfill the challenge
 # for example:
@@ -27,8 +29,10 @@
 - copy:
     dest: /var/www/html/{{ challenge['challenge_data'][item.item.key]['http-01']['resource'] }}
     content: "{{ item['challenge_data'][item.item.key]['http-01']['resource_value'] }}"
-    when: item is changed
     with_dict: "{{ challenge.results }}"
+  when: 
+    - challenge is defined
+    - item is changed
 
 - name: Let the challenge be validated and retrieve the cert and intermediate certificate
   acme_certificate:
@@ -50,3 +54,5 @@
     chain_dest: /etc/httpd/ssl/{{ item.key }}-intermediate.crt
     data: "{{ item }}"
   with_dict: "{{ challenge.results }}"
+  when: 
+    - challenge is defined

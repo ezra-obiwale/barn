@@ -25,6 +25,7 @@
   with_dict: "{{ virtualhosts }}"
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - virtualhosts is defined
     - item.value.run_queue_worker|default(false)|bool == true
   vars:
     user: nginx
@@ -37,6 +38,7 @@
   with_dict: "{{ virtualhosts }}"
   when: 
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+    - virtualhosts is defined
     - item.value.run_queue_worker|default(false)|bool == true
   vars:
     user: www-data
@@ -49,6 +51,7 @@
   with_dict: "{{ virtualhosts }}"
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - virtualhosts is defined
     - item.value.run_queue_worker|default(false)|bool == true
   vars:
     user: nginx
@@ -61,6 +64,7 @@
   with_dict: "{{ virtualhosts }}"
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - virtualhosts is defined
     - item.value.run_queue_worker|default(false)|bool == true
   vars:
     user: www-data
@@ -77,6 +81,7 @@
       skip_missing: true
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - virtualhosts is defined
   notify:
     - Reload supervisord config (Debian)
 
@@ -90,5 +95,6 @@
       skip_missing: true
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - virtualhosts is defined
   notify:
     - Reload supervisord config

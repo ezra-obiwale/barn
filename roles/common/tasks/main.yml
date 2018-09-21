@@ -36,6 +36,16 @@
   apt: name=unzip state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
+- name: Make sure curl is installed
+  tags: curl
+  apt: name=curl state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Make sure curl is installed
+  tags: curl
+  apt: name=curl state=present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
 - name: Remove require tty
   lineinfile:
     dest: /etc/sudoers

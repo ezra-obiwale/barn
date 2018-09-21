@@ -1,6 +1,8 @@
 # file: roles/cleanup/tasks/main.yml
 - include_tasks: commands.yml
   with_dict: "{{ virtualhosts }}"
-  when: host.value.cleanup is defined
+  when: 
+    - virtualhosts is defined
+    - host.value.cleanup is defined
   loop_control:
     loop_var: host

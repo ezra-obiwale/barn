@@ -50,6 +50,7 @@
   with_dict: "{{ virtualhosts }}"
   register: created_databases
   when:
+    - virtualhosts is defined
     - item.value.database is defined
     - item.value.database.name is defined
 
@@ -58,6 +59,7 @@
   mysql_user: name={{ item.item.value.database.user }} host=localhost password={{ item.item.value.database.password }} priv={{ item.item.value.database.name }}.*:ALL
   with_items: "{{ created_databases.results }}"
   when:
+    - created_databases is defined
     - item is succeeded
     - item.item.value.database is defined
     - item.item.value.database.user is defined
@@ -69,6 +71,7 @@
     path: /var/www/{{ item.item.key }}.sql
   with_items: "{{ created_databases.results }}"
   when:
+    - created_databases is defined
     - item is succeeded
     - item.item.value.database is defined
     - item.item.value.database.dump is defined

@@ -4,6 +4,8 @@
   shell: chcon -R -t httpd_sys_rw_content_t /var/www/{{ item.key }}
   with_dict: "{{ virtualhosts }}"
   changed_when: False
+  when:
+    - virtualhosts is defined
 
 - name: Allow nginx to make TCP connections ie. to redis/beanstalk
   tags: selinux

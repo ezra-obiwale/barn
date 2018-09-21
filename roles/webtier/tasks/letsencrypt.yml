@@ -39,6 +39,8 @@
     path: /etc/letsencrypt/live/{{ item.value.servernames[0] }}/fullchain.pem
   with_dict: "{{ virtualhosts }}"
   register: certs_check
+  when:
+    - virtualhosts is defined
 
 - name: Install / renew virtualhosts certificates
   tags: letsencrypt
@@ -48,6 +50,7 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+    - certs_check is defined
     - item.stat.exists == False
 
 - name: Install / renew virtualhosts certificates
@@ -58,6 +61,7 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+    - certs_check is defined
     - item.stat.exists == False
 
 - name: Check existence of phpmyadmin certificate
