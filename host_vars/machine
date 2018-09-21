@@ -1,0 +1,70 @@
+# COMMON ----------------------------------------------------------------------------
+
+## FIREWALLD
+firewalld: false
+
+## REDIS
+redis: true
+
+# WEB SERVERS -----------------------------------------------------------------------
+
+## COMPOSER
+composer: true
+
+## LET'S ENCRYPT
+ssl: false
+
+## NGINX
+nginx: true
+
+## NODEJS 8.x
+nodejs: true
+
+## PHP 7.2
+php: true
+php_memory_limit: "512M"
+php_extra_packages:
+  - php7.2-common
+  - php7.2-xmlrpc
+  - php7.2-soap
+  - php7.2-gd
+  - php7.2-cli
+  - php7.2-intl
+  - php7.2-curl
+
+## SELINUX (CentOS and RedHat)
+selinux: true
+
+## YARN
+yarn: true
+
+# DB SERVERS -----------------------------------------------------------------------------
+    
+# MYSQL
+mysql: false
+mysql_root_password: root
+
+# MARIADB
+mariadb: true
+mariadb_root_password: root
+
+global_db_users:
+  - name: dev
+    password: dev
+
+# PHPMYADMIN
+phpmyadmin: true
+phpmyadmin_directory: /var/www
+phpmyadmin_virtualhost: phpmyadmin
+phpmyadmin_https: false
+
+# ELASTIC SEARCH
+elasticsearch: false
+
+# QUEUE SERVERS -------------------------------------------------------------------------
+
+## BEANSTALK
+beanstalk: false
+
+## SUPERVISOR
+supervisor: true

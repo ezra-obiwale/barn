@@ -54,6 +54,11 @@ mysql_root_password: root
 mariadb: true
 mariadb_root_password: root
 
+# Users with access to all databases
+global_db_users:
+  - name: dev
+    password: dev
+
 # PHPMYADMIN
 phpmyadmin: true
 phpmyadmin_directory: /var/www

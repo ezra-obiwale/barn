@@ -65,6 +65,13 @@
     - item.item.value.database.user is defined
     - item.item.value.database.password is defined
 
+- name: Create global database users
+  tags: mariadb
+  mysql_user: name={{ item.name }} host=localhost password={{ item.password | default('') }} priv=*.*:ALL
+  with_items: "{{ global_db_users }}"
+  when:
+    - item.name is defined
+
 - name: Check database dump file doesn't already exists
   tags: mariadb
   stat:
