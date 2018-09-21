@@ -40,7 +40,7 @@
   notify:
     - Restart nginx
   when:
-    - vhost_certs is defined
+    - virtualhosts is defined
     - item.stat.exists == false
 
 - name: Check existence of phpmyadmin ssl certificate
@@ -59,12 +59,10 @@
   notify:
     - Restart nginx
   when:
-    - pma_cert is defined
     - pma_cert.stat.exists == false
     
 - name: Set permissions on /var/www
   tags: nginx
   file: path=/var/www owner=root group=www-data mode=ug=rwX,o=rX recurse=yes
   when:
-    - pma_cert is defined
     - pma_cert.stat.exists == false

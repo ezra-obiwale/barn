@@ -44,7 +44,7 @@
   with_items: "{{ vhost_certs }}"
   register: issued_dns_certs
   when:
-    - vhost_certs is defined
+    - virtualhosts is defined
     - item.exists|default(true)|bool == false
     - item.item.value.acme_dns is defined
 
@@ -54,7 +54,7 @@
   with_items: "{{ vhost_certs }}"
   register: issued_webroot_certs
   when:
-    - vhost_certs is defined
+    - virtualhosts is defined
     - item.exists|default(true)|bool == false
     - item.item.value.acme_dns is not defined
 
@@ -62,7 +62,7 @@
   tags: nginx-ssl
   shell: acme.sh --issue -d {{ phpmyadmin_virtualhost }} -w {{ phpmyadmin_directory | default('/var/www/html') }}/phpmyadmin
   when:
-    - pma_cert is defined
+    - virtualhosts is defined
     - pma_cert.exists == false
     - phpmyadmin_virtualhost is defined
     - phpmyadmin_https|default(true)|bool == true
@@ -75,7 +75,7 @@
   notify:
     - Restart nginx
   when: 
-    - issued_dns_certs is defined
+    - virtualhosts is defined
     - item is success
 
 - name: Install virtualhosts' webroot certificates
@@ -85,7 +85,7 @@
   notify:
     - Restart nginx
   when: 
-    - issued_webroot_certs is defined
+    - virtualhosts is defined
     - item is success
 
 - name: Install phpmyadmin certificate
@@ -94,8 +94,7 @@
   notify:
     - Restart nginx
   when: 
-    - issued_pma_cert is defined
-    - issued_pma_cert is success
+    - virtualhosts is defined
 
 - name: Make sure nginx ssl virtual hosts are configured
   tags: nginx-ssl
@@ -108,7 +107,6 @@
   tags: nginx-ssl-phpmyadmin
   template: src=nginx-ssl-pma-virtualhost.conf.j2 dest=/etc/nginx/conf.d/phpmyadmin.conf
   when: 
-    - issued_pma_cert is defined
-    - issued_pma_cert is success
+    - virtualhosts is defined
   notify:
     - Restart nginx

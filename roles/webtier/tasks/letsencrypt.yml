@@ -50,7 +50,7 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
-    - certs_check is defined
+    - virtualhosts is defined
     - item.stat.exists == False
 
 - name: Install / renew virtualhosts certificates
@@ -61,7 +61,7 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-    - certs_check is defined
+    - virtualhosts is defined
     - item.stat.exists == False
 
 - name: Check existence of phpmyadmin certificate
@@ -80,7 +80,7 @@
     - Restart nginx
   when: 
     - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
-    - pma_check is defined
+    - virtualhosts is defined
     - pma_check.stat.exists == False
 
 - name: Install / renew phpmyadmin certificate
@@ -90,7 +90,7 @@
     - Restart nginx
   when:
     - ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-    - pma_check is defined
+    - virtualhosts is defined
     - pma_check.stat.exists == False
 
 - name: Add auto renewal for certificates to crontab

@@ -31,7 +31,7 @@
     content: "{{ item['challenge_data'][item.item.key]['http-01']['resource_value'] }}"
     with_dict: "{{ challenge.results }}"
   when: 
-    - challenge is defined
+    - virtualhosts is defined
     - item is changed
 
 - name: Let the challenge be validated and retrieve the cert and intermediate certificate
@@ -55,4 +55,4 @@
     data: "{{ item }}"
   with_dict: "{{ challenge.results }}"
   when: 
-    - challenge is defined
+    - virtualhosts is defined
