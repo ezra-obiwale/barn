@@ -1,5 +1,8 @@
 # COMMON ----------------------------------------------------------------------------
 
+## TIMEZONE
+timezone: Africa/Lagos
+
 ## FIREWALLD
 firewalld: true
 firewalld_ports:

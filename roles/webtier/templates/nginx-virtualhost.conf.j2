@@ -34,13 +34,12 @@ server {
     {% endif %}
 
     underscores_in_headers on;
-}
 
-{% if item.item.value.redirect is defined %}
-{% for redirect in item.item.value.redirect %}
-server { 
-    server_name {{ redirect.from }}; 
-    return {{ redirect.code|default(301) }} http://{{ redirect.to }}$request_uri; 
+    {% if item.value.redirect is defined %}
+    {% for redirect in item.value.redirect %}
+    if ($host = '{{ redirect.from }}') 
+        return {{ redirect.code|default(301) }} http://{{ redirect.to }}$request_uri; 
+    }
+    {% endfor %}
+    {% endif %}
 }
-{% endfor %}
-{% endif %}

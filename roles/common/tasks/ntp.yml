@@ -7,6 +7,9 @@
   apt: name=ntp state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
+- name: Ensure time will be synced automatically
+  shell: ntpd -gq
+
 - name: Make sure ntpd is running
   service: name=ntpd state=started
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
@@ -22,3 +25,9 @@
 - name: Make sure ntpd is started on boot
   service: name=ntp enabled=yes
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Set system timezone
+  shell: timedatectl set-timezone {{ timezone }}
+  when:
+    - timezone is defined
+  

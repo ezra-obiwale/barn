@@ -29,9 +29,9 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
     ssl on;
-    ssl_certificate /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/fullchain.pem;
-    ssl_certificate_key /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/key.pem;
-    ssl_trusted_certificate /etc/nginx/acme/{{ phpmyadmin_virtualhost }}/cert.pem;
+    ssl_certificate /etc/nginx/acme.sh/{{ phpmyadmin_virtualhost }}/fullchain.pem;
+    ssl_certificate_key /etc/nginx/acme.sh/{{ phpmyadmin_virtualhost }}/key.pem;
+    ssl_trusted_certificate /etc/nginx/acme.sh/{{ phpmyadmin_virtualhost }}/cert.pem;
 
     if ($https = '') {
         return 301 https://$host$request_uri;

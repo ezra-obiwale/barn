@@ -39,9 +39,17 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
     ssl on;
-    ssl_certificate /etc/nginx/acme/{{ item.value.servernames[0] }}/fullchain.pem;
-    ssl_certificate_key /etc/nginx/acme/{{ item.value.servernames[0] }}/key.pem;
-    ssl_trusted_certificate /etc/nginx/acme/{{ item.value.servernames[0] }}/cert.pem;
+    ssl_certificate /etc/nginx/acme.sh/{{ item.value.servernames[0] }}/fullchain.pem;
+    ssl_certificate_key /etc/nginx/acme.sh/{{ item.value.servernames[0] }}/key.pem;
+    ssl_trusted_certificate /etc/nginx/acme.sh/{{ item.value.servernames[0] }}/cert.pem;
+
+    {% if item.value.redirect is defined %}
+    {% for redirect in item.value.redirect %}
+    if ($host = '{{ redirect.from }}') 
+        return {{ redirect.code|default(301) }} https://{{ redirect.to }}$request_uri; 
+    }
+    {% endfor %}
+    {% endif %}
 
     {% if item.value.enforce_https|default(true) %}
     if ($https = '') {
@@ -60,11 +68,3 @@ server {
     {% endif %}
 
 }
-{% if item.value.redirect is defined %}
-{% for redirect in item.value.redirect %}
-server { 
-    server_name {{ redirect.from }}; 
-    return {{ redirect.code|default(301) }} https://{{ redirect.to }}$request_uri; 
-}
-{% endfor %}
-{% endif %}
