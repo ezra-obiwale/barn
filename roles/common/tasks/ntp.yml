@@ -7,6 +7,14 @@
   apt: name=ntp state=present
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
+- name: Make sure ntpd is not running
+  service: name=ntpd state=stopped
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Make sure ntpd is not running
+  service: name=ntp state=stopped
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
 - name: Ensure time will be synced automatically
   shell: ntpd -gq
 
@@ -30,4 +38,3 @@
   shell: timedatectl set-timezone {{ timezone }}
   when:
     - timezone is defined
-  
