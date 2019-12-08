@@ -48,7 +48,7 @@ selinux: true
 yarn: true
 
 # DB SERVERS -----------------------------------------------------------------------------
-    
+
 # MYSQL
 mysql: false
 mysql_root_password: root
